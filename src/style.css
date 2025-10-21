@@ -60,3 +60,8 @@
 .text-primary-subtle {
   color: #712cf9 !important;
 }
+
+.select-switch-lg {
+  transform: scale(1.1);
+  margin-right: 8px;
+}

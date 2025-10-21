@@ -35,12 +35,13 @@
         System will reboot.
       </div>
       <div
-        class="spinner-border text-primary mt-2"
+        class="spinner-border text-primary mt-3"
         role="status">
         <span class="visually-hidden">Loading...</span>
       </div>
       <div
         v-if="countdown !== null"
+        class="mt-2"
         style="font-size: 0.8rem">
         <span class="fw-bold">
           {{ countdown }}

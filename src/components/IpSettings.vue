@@ -108,8 +108,8 @@
           <span class="me-2">DHCP</span>
           <div class="form-check form-switch">
             <input
-              class="form-check-input"
-              style="cursor: pointer"
+              class="form-check-input select-switch-lg"
+              style="cursor: pointer; margin-top: 6px"
               type="checkbox"
               v-model="newValue.dhcp_enabled"
               id="dhcpSwitch" />

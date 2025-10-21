@@ -5,13 +5,6 @@
   import { ref } from 'vue'
   const route = useRoute()
   const navbarCollapse = ref(null)
-  function closeNavbar() {
-    const el = navbarCollapse.value
-    if (el && window.BootstrapCollapse) {
-      const collapse = window.BootstrapCollapse.getOrCreateInstance(el)
-      collapse.hide()
-    }
-  }
 </script>
 
 <template>
@@ -39,28 +32,25 @@
         id="navbarNavAltMarkup"
         ref="navbarCollapse">
         <div class="navbar-nav">
-          <router-link
+          <a
             class="nav-link"
             :class="{ active: route.path === '/' }"
-            to="/"
-            aria-current="page"
-            @click="closeNavbar">
+            href="/"
+            aria-current="page">
             Settings
-          </router-link>
-          <router-link
+          </a>
+          <a
             class="nav-link"
             :class="{ active: route.path === '/comm' }"
-            to="/comm"
-            @click="closeNavbar">
+            href="/comm">
             Communication
-          </router-link>
-          <router-link
+          </a>
+          <a
             class="nav-link"
             :class="{ active: route.path === '/gpio' }"
-            to="/gpio"
-            @click="closeNavbar">
+            href="/gpio">
             GPIO
-          </router-link>
+          </a>
         </div>
         <span class="navbar-text ms-auto">v0.1.0</span>
       </div>

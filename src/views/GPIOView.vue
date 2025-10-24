@@ -24,11 +24,9 @@
   const getCommSettings = async () => {
     try {
       const response = await api.get('/gpio')
-      console.log(response)
       deviceId.value = response.data.device_id
       autoResponse.value = response.data.auto_response
       commMode.value = response.data.comm_mode.toUpperCase()
-      console.log('Communication settings fetched:', response.data)
     } catch (error) {
       console.error('Error fetching communication settings:', error)
     }
@@ -39,15 +37,14 @@
       deviceIdError.value = 'Please enter a valid Device ID (1-254).'
       return
     }
-
-    const response = await api.post('/gpio', {
-      device_id: deviceId.value,
-      auto_response: autoResponse.value,
-      comm_mode: commMode.value.toLowerCase()
-    })
-    if (!response.ok) {
-      console.error('Error submitting communication settings:', response.status)
-      return
+    try {
+      await api.post('/gpio', {
+        device_id: deviceId.value,
+        auto_response: autoResponse.value,
+        comm_mode: commMode.value.toLowerCase()
+      })
+    } catch (error) {
+      return console.error('Error submitting communication settings:', error)
     }
     // 세팅 변경 성공 시 리부팅 모달 표시
     showSuccess()
@@ -115,14 +112,16 @@
           for="autoResponseSwitch">
           Enable Auto Response
         </label>
-        <div class="form-check form-switch mb-3">
+        <label
+          class="switch"
+          for="autoResponseSwitch">
           <input
-            class="form-check-input select-switch-lg"
-            style="cursor: pointer; margin-top: 10px"
+            class="switch-input"
             type="checkbox"
             id="autoResponseSwitch"
             v-model="autoResponse" />
-        </div>
+          <span class="switch-slider"></span>
+        </label>
       </div>
       <button
         type="submit"

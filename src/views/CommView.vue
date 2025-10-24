@@ -33,7 +33,6 @@
       const data = response.data
       tcpPort.value = data.tcp_port
       baudRate.value = data.rs232_1_baud
-      console.log('Communication settings fetched:', data)
     } catch (error) {
       console.error('Error fetching communication settings:', error)
     }
@@ -50,7 +49,7 @@
         rs232_1_baud: baudRate.value
       })
     } catch (error) {
-      console.error('Error submitting communication settings:', error)
+      return console.error('Error submitting communication settings:', error)
     }
     // 세팅 변경 성공 시 리부팅 모달 표시
     showRebootModal()
@@ -102,7 +101,7 @@
         <select
           id="baudRate"
           v-model="baudRate"
-          class="form-select form-select-sm"
+          class="form-select"
           required>
           <option
             v-for="baud in bauds"

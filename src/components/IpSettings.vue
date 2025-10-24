@@ -55,7 +55,6 @@
   const getnetworkAddress = async () => {
     try {
       const r = await api.get('/network')
-      console.log(r)
       macAddress.value = r.data.mac
       return (networkAddress.value = r.data.network)
     } catch (error) {
@@ -71,11 +70,12 @@
   async function onSubmit() {
     if (validateForm() || newValue.value.dhcp_enabled) {
       // 네트워크 설정 제출
-
-      const response = await api.post('/network', newValue.value)
-      if (!response.ok) {
-        console.error('Error submitting network settings:', response.status)
+      try {
+        await api.post('/network', newValue.value)
+      } catch (error) {
+        return console.error('Error submitting network settings:', error)
       }
+
       // 모달 표시 및 10초 카운트다운 후 새로고침
       showModal.value = true
       countdown.value = 10
@@ -96,21 +96,21 @@
     <div
       class="network-card card p-4 shadow-sm"
       style="max-width: 400px; margin: auto">
-      <div class="d-flex mb-3">
+      <div class="network-header">
         <img
           src="../icons/settings_ethernet.svg"
           style="width: 24px; height: 24px" />
         <div class="font-name-tag mb-1">Network Status</div>
-        <div class="ms-auto d-flex">
+        <div class="header-actions">
           <span class="me-2">DHCP</span>
-          <div class="form-check form-switch">
+          <label class="switch">
             <input
-              class="form-check-input select-switch-lg"
-              style="cursor: pointer; margin-top: 6px"
+              class="switch-input"
               type="checkbox"
               v-model="newValue.dhcp_enabled"
               id="dhcpSwitch" />
-          </div>
+            <span class="switch-slider"></span>
+          </label>
         </div>
       </div>
       <div class="mb-2">

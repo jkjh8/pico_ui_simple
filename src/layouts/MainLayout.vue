@@ -16,10 +16,10 @@
     <div class="container-fluid">
       <div
         class="navbar-brand"
-        style="font-size: 1.5rem; font-weight: 600">
+        style="font-size: 2rem; font-weight: 700">
         M
       </div>
-      <div class="d-flex align-items-center w-100">
+      <div class="d-flex w-100">
         <div class="navbar-nav d-flex flex-row flex-nowrap gap-2">
           <div
             class="nav-link"

@@ -3,6 +3,7 @@
 <script setup>
   import { ref } from 'vue'
   import LoadingModal from './LoadingModal.vue'
+  import { api } from '../composables/useApi.js'
 
   const showConfirm = ref(false)
   const showReboot = ref(false)
@@ -23,8 +24,7 @@
     countdown.value = 10
     // 실제 리부팅
     try {
-      const response = await axios.get('/reboot')
-      console.log('Reboot request sent:', response.data)
+      await api.get('/restart')
     } catch (error) {
       console.error('Error sending reboot request:', error)
     }

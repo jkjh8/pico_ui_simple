@@ -5,10 +5,16 @@
 </script>
 
 <template>
-  <div class="d-grid gap-3">
+  <div class="ip-settings">
     <IpSettings />
     <systemReboot />
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+  .ip-settings {
+    display: grid;
+    gap: 1rem;
+    padding-top: 1rem;
+  }
+</style>

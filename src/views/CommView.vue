@@ -2,6 +2,7 @@
 <script setup>
   import { ref, onMounted } from 'vue'
   import LoadingModal from '../components/LoadingModal.vue'
+  import { api } from '../composables/useApi.js'
 
   const bauds = [9600, 19200, 38400, 57600, 115200, 230400, 460800, 921600]
   const baudRate = ref(9600)
@@ -28,8 +29,8 @@
 
   const getCommSettings = async () => {
     try {
-      const response = await fetch('/api/control')
-      const data = await response.json()
+      const response = await api.get('/control')
+      const data = response.data
       tcpPort.value = data.tcp_port
       baudRate.value = data.rs232_1_baud
       console.log('Communication settings fetched:', data)
@@ -43,20 +44,13 @@
       portError.value = 'Please enter a valid TCP port (1-65535).'
       return
     }
-
-    const response = await fetch('/api/control', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
+    try {
+      await api.post('/control', {
         tcp_port: tcpPort.value,
         rs232_1_baud: baudRate.value
       })
-    })
-    if (!response.ok) {
-      console.error('Error submitting communication settings:', response.status)
-      return
+    } catch (error) {
+      console.error('Error submitting communication settings:', error)
     }
     // 세팅 변경 성공 시 리부팅 모달 표시
     showRebootModal()
@@ -74,21 +68,21 @@
     <div class="d-flex mb-3">
       <img
         src="../icons/send.svg"
-        style="width: 26px; height: 26px; margin-right: 10px" />
-      <h4 class="fw-bold mb-0 ml-2">Communication Settings</h4>
+        style="width: 26px; height: 26px" />
+      <div class="font-name-tag mb-0">Communication Settings</div>
     </div>
     <form @submit.prevent="onSubmit">
       <div class="mb-2">
         <label
           for="tcpPort"
-          class="form-label fw-semibold">
+          class="form-label text-secondary small">
           TCP Port
         </label>
         <input
           type="number"
           id="tcpPort"
           v-model="tcpPort"
-          class="form-control"
+          class="form-control form-control-sm"
           min="1"
           max="65535"
           required />
@@ -102,13 +96,13 @@
       <div class="mb-2">
         <label
           for="baudRate"
-          class="form-label fw-semibold">
+          class="form-label text-secondary small">
           RS-232 Baud Rate
         </label>
         <select
           id="baudRate"
           v-model="baudRate"
-          class="form-select"
+          class="form-select form-select-sm"
           required>
           <option
             v-for="baud in bauds"

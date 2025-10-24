@@ -4,8 +4,9 @@
   import { ref, onMounted, watch } from 'vue'
   import { useRules } from '../composables/useRules.js'
   import LoadingModal from './LoadingModal.vue'
+  import { api } from '../composables/useApi.js'
+  import { macAddress, networkAddress } from '../composables/useNetwork.js'
 
-  const networkStatus = ref({})
   const newValue = ref({})
   const showModal = ref(false)
   const countdown = ref(10)
@@ -38,7 +39,7 @@
       !dnsError.value
     )
   }
-  // dhcp_enabled가 true로 바뀌면 에러 메시지 초기화
+  // dhcp가 true로 바뀌면 에러 메시지 초기화
   watch(
     () => newValue.value.dhcp_enabled,
     (val) => {
@@ -51,31 +52,27 @@
     }
   )
 
-  const getNetworkStatus = async () => {
+  const getnetworkAddress = async () => {
     try {
-      const response = await fetch('/api/network')
-      const data = await response.json()
-      return (networkStatus.value = data.network)
+      const r = await api.get('/network')
+      console.log(r)
+      macAddress.value = r.data.mac
+      return (networkAddress.value = r.data.network)
     } catch (error) {
       console.error('Error fetching network status:', error)
     }
   }
 
   onMounted(async () => {
-    await getNetworkStatus()
-    newValue.value = networkStatus.value
+    await getnetworkAddress()
+    newValue.value = networkAddress.value
   })
 
   async function onSubmit() {
     if (validateForm() || newValue.value.dhcp_enabled) {
       // 네트워크 설정 제출
-      const response = await fetch('/api/network', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(newValue.value)
-      })
+
+      const response = await api.post('/network', newValue.value)
       if (!response.ok) {
         console.error('Error submitting network settings:', response.status)
       }
@@ -99,12 +96,12 @@
     <div
       class="network-card card p-4 shadow-sm"
       style="max-width: 400px; margin: auto">
-      <div class="d-flex align-items-center mb-3">
+      <div class="d-flex mb-3">
         <img
           src="../icons/settings_ethernet.svg"
-          style="width: 28px; height: 28px; margin-right: 10px" />
-        <h4 class="fw-bold mb-0 ml-2">Network Status</h4>
-        <div class="ms-auto d-flex align-items-center">
+          style="width: 24px; height: 24px" />
+        <div class="font-name-tag mb-1">Network Status</div>
+        <div class="ms-auto d-flex">
           <span class="me-2">DHCP</span>
           <div class="form-check form-switch">
             <input
@@ -120,7 +117,7 @@
         <label class="form-label text-secondary small">IP Address</label>
         <input
           type="text"
-          class="form-control bg-light"
+          class="form-control form-control-sm bg-light"
           v-model="newValue.ip"
           :disabled="newValue.dhcp_enabled" />
         <div
@@ -133,7 +130,7 @@
         <label class="form-label text-secondary small">Netmask</label>
         <input
           type="text"
-          class="form-control bg-light"
+          class="form-control form-control-sm bg-light"
           v-model="newValue.subnet"
           :disabled="newValue.dhcp_enabled" />
         <div
@@ -146,7 +143,7 @@
         <label class="form-label text-secondary small">Gateway</label>
         <input
           type="text"
-          class="form-control bg-light"
+          class="form-control form-control-sm bg-light"
           v-model="newValue.gateway"
           :disabled="newValue.dhcp_enabled" />
         <div
@@ -159,7 +156,7 @@
         <label class="form-label text-secondary small">DNS</label>
         <input
           type="text"
-          class="form-control bg-light"
+          class="form-control form-control-sm bg-light"
           v-model="newValue.dns"
           :disabled="newValue.dhcp_enabled" />
         <div

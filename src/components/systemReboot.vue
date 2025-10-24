@@ -17,10 +17,17 @@
     showConfirm.value = false
   }
 
-  function onConfirm() {
+  async function onConfirm() {
     showConfirm.value = false
     showReboot.value = true
     countdown.value = 10
+    // 실제 리부팅
+    try {
+      const response = await axios.get('/reboot')
+      console.log('Reboot request sent:', response.data)
+    } catch (error) {
+      console.error('Error sending reboot request:', error)
+    }
     const timer = setInterval(() => {
       countdown.value--
       if (countdown.value <= 0) {
@@ -37,11 +44,11 @@
   <div
     class="network-card card p-4 shadow-sm"
     style="max-width: 400px; width: 100%; margin: auto">
-    <div class="d-flex mb-3">
+    <div class="d-flex align-items-center">
       <img
         src="../icons/power_settings_new.svg"
-        style="width: 24px; height: 24px; margin-right: 10px" />
-      <h4 class="fw-bold mb-0 ml-2">System Reboot</h4>
+        style="width: 20px; height: 20px; margin-right: 10px" />
+      <div class="font-name-tag mb-1">System Reboot</div>
     </div>
 
     <button

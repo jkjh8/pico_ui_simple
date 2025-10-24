@@ -2,6 +2,7 @@
 <script setup>
   import { ref, onMounted } from 'vue'
   import LoadingModal from '../components/LoadingModal.vue'
+  import { api } from '../composables/useApi.js'
 
   const commMode = ref('TEXT')
   const commModes = ['TEXT', 'JSON']
@@ -22,33 +23,27 @@
 
   const getCommSettings = async () => {
     try {
-      const response = await fetch('/api/gpio')
-      const data = await response.json()
-      deviceId.value = data.device_id
-      autoResponse.value = data.auto_response
-      commMode.value = data.comm_mode.toUpperCase()
-      console.log('Communication settings fetched:', data)
+      const response = await api.get('/gpio')
+      console.log(response)
+      deviceId.value = response.data.device_id
+      autoResponse.value = response.data.auto_response
+      commMode.value = response.data.comm_mode.toUpperCase()
+      console.log('Communication settings fetched:', response.data)
     } catch (error) {
       console.error('Error fetching communication settings:', error)
     }
   }
 
   const onSubmit = async () => {
-    if (deviceId.value < 1 || deviceId.value > 256) {
-      deviceIdError.value = 'Please enter a valid Device ID (1-256).'
+    if (deviceId.value < 1 || deviceId.value > 254) {
+      deviceIdError.value = 'Please enter a valid Device ID (1-254).'
       return
     }
 
-    const response = await fetch('/api/gpio', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        device_id: deviceId.value,
-        auto_response: autoResponse.value,
-        comm_mode: commMode.value.toLowerCase()
-      })
+    const response = await api.post('/gpio', {
+      device_id: deviceId.value,
+      auto_response: autoResponse.value,
+      comm_mode: commMode.value.toLowerCase()
     })
     if (!response.ok) {
       console.error('Error submitting communication settings:', response.status)
@@ -70,21 +65,21 @@
     <div class="d-flex mb-3">
       <img
         src="../icons/cable.svg"
-        style="width: 26px; height: 26px; margin-right: 10px" />
-      <h4 class="fw-bold mb-0 ml-2">GPIO Settings</h4>
+        style="width: 20px; height: 20px" />
+      <div class="font-name-tag mb-1">GPIO Settings</div>
     </div>
     <form @submit.prevent="onSubmit">
       <div class="mb-2">
         <label
           for="deviceId"
-          class="form-label fw-semibold">
+          class="form-label text-secondary small">
           Device ID
         </label>
         <input
+          class="form-control form-control-sm"
           type="number"
           id="deviceId"
           v-model="deviceId"
-          class="form-control"
           min="1"
           max="256"
           required />
@@ -98,13 +93,13 @@
       <div class="mb-2">
         <label
           for="commMode"
-          class="form-label fw-semibold">
+          class="form-label text-secondary small">
           Communication Mode
         </label>
         <select
+          class="form-select form-select-sm"
           id="commMode"
           v-model="commMode"
-          class="form-select"
           required>
           <option
             v-for="mode in commModes"
@@ -114,9 +109,9 @@
           </option>
         </select>
       </div>
-      <div class="mb-2 d-flex justify-content-between align-items-center">
+      <div class="mt-3 d-flex justify-content-between align-items-center">
         <label
-          class="form-label fw-semibold"
+          class="form-label text-secondary small"
           for="autoResponseSwitch">
           Enable Auto Response
         </label>

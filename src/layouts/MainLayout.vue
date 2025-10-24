@@ -1,8 +1,12 @@
 <!-- @format -->
 
 <script setup>
-  import { useRoute } from 'vue-router'
-  const route = useRoute()
+  import { ref } from 'vue'
+  const current = ref('settings')
+  import SettingsView from '../views/HomeView.vue'
+  import CommView from '../views/CommView.vue'
+  import GPIOView from '../views/GPIOView.vue'
+  import { networkAddress } from '../composables/useNetwork'
 </script>
 
 <template>
@@ -12,37 +16,46 @@
     <div class="container-fluid">
       <div
         class="navbar-brand"
-        style="font-weight: 600">
-        Mic Controller
+        style="font-size: 1.5rem; font-weight: 600">
+        M
       </div>
       <div class="d-flex align-items-center w-100">
-        <div class="navbar-nav d-flex flex-row flex-nowrap">
-          <router-link
+        <div class="navbar-nav d-flex flex-row flex-nowrap gap-2">
+          <div
             class="nav-link"
-            :class="{ active: route.path === '/' }"
-            to="/"
+            :class="{ active: current === 'settings' }"
+            style="cursor: pointer"
+            @click="current = 'settings'"
             aria-current="page">
             Settings
-          </router-link>
-          <router-link
+          </div>
+          <div
             class="nav-link"
-            :class="{ active: route.path === '/comm' }"
-            to="/comm">
+            :class="{ active: current === 'comm' }"
+            style="cursor: pointer"
+            @click="current = 'comm'">
             Communication
-          </router-link>
-          <router-link
+          </div>
+          <div
             class="nav-link"
-            :class="{ active: route.path === '/gpio' }"
-            to="/gpio">
+            :class="{ active: current === 'gpio' }"
+            style="cursor: pointer"
+            @click="current = 'gpio'">
             GPIO
-          </router-link>
+          </div>
         </div>
-        <span class="navbar-text ms-auto">v0.1.0</span>
+        <span
+          class="ms-auto"
+          style="font-size: 0.8rem; color: white">
+          {{ networkAddress ? networkAddress.mac : 'No Network' }}
+        </span>
       </div>
     </div>
   </nav>
   <main class="px-5 py-3">
-    <router-view />
+    <SettingsView v-if="current === 'settings'" />
+    <CommView v-else-if="current === 'comm'" />
+    <GPIOView v-else-if="current === 'gpio'" />
   </main>
 </template>
 

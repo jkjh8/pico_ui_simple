@@ -1,7 +1,4 @@
 /** @format */
-:root {
-  --bs-primary: #712cf9;
-}
 
 .no-wrap {
   display: flex;
@@ -15,53 +12,23 @@
   font-weight: 600;
 }
 
-.main-color {
-  color: #712cf9;
-}
-
-.bg-primary {
-  background-color: #712cf9 !important;
-}
-
-.text-primary {
-  color: #712cf9 !important;
-}
-
 .network-card {
   background: #fff;
   border-radius: 12px;
   border: none;
 }
-.form-check-input:checked {
-  background-color: #712cf9;
-  border-color: #712cf9;
-}
-.form-check-input:focus {
-  box-shadow: 0 0 0 0.2rem rgba(113, 44, 249, 0.3);
-}
+
 .form-check-input:active {
   box-shadow: none;
-}
-
-.btn-primary {
-  background-color: #712cf9;
-  border-color: #712cf9;
-}
-
-.btn-primary:hover {
-  background-color: #5a22c8;
-  border-color: #5a22c8;
-}
-
-.bg-primary-subtle {
-  background-color: #eaf2ff !important;
-}
-
-.text-primary-subtle {
-  color: #712cf9 !important;
 }
 
 .select-switch-lg {
   transform: scale(1.1);
   margin-right: 8px;
+}
+
+.font-name-tag {
+  margin-left: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
 }
